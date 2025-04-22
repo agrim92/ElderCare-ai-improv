@@ -248,9 +248,11 @@
                 try {
                     this.showLoading();
         
-                    const response = await fetch('/process', {
+                    
+                    const response = await fetch('/process-audio', {  // Match new endpoint
                         method: 'POST',
-                        body: this.createFormData(audioBlob)
+                        body: formData
+
                     });
 
                     if (!response.ok) {
