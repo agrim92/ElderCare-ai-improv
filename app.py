@@ -50,8 +50,8 @@ def speech_to_text(audio_file):
 def index():
     return render_template('index.html')
 
-@app.route('/process', methods=['POST'])
-def process_command():
+@app.route('/process-audio', methods=['POST'])  
+def handle_audio_command():  
     try:
         if 'audio' not in request.files:
             return jsonify({"error": "No audio file received"}), 400
