@@ -246,19 +246,29 @@
 
             async processAudio(audioBlob) {
                 try {
-                    const formData = new FormData();
-                    formData.append('audio', audioBlob);
-                    
+                    this.showLoading();
+        
                     const response = await fetch('/process', {
                         method: 'POST',
-                        body: formData
+                        body: this.createFormData(audioBlob)
                     });
-                    
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
                     const result = await response.json();
-                    this.displayResponse(result.response);
-                    this.playAudioResponse(result.audio);
+        
+                    if (result.error) {
+                        this.showError(result.error);
+                    } else {
+                        this.displayResponse(result.response);
+                        this.playAudioResponse(result.audio);
+                    }
+        
                 } catch (err) {
-                    this.showError('Connection error');
+                    this.showError(err.message);
+                    console.error('Processing error:', err);
                 } finally {
                     this.hideLoading();
                 }
