@@ -52,6 +52,30 @@ def index():
 
 @app.route('/process', methods=['POST'])
 def process_command():
+    try:
+        if 'audio' not in request.files:
+            return jsonify({"error": "No audio file received"}), 400
+            
+        audio_file = request.files['audio']
+        # Add audio validation here
+        if audio_file.filename == '':
+            return jsonify({"error": "Empty audio file"}), 400
+            
+        command = speech_to_text(audio_file)
+        if not command:
+            return jsonify({"response": "Could not understand audio"})
+            
+        response = handle_command(command)
+        return jsonify({
+            "response": response,
+            "audio": text_to_speech(response)
+        })
+        
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/process', methods=['POST'])
+def process_command():
     audio_file = request.files['audio']
     command = speech_to_text(audio_file)
     
